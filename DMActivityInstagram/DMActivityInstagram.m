@@ -55,33 +55,6 @@
     }
 }
 
-- (UIViewController *)activityViewController {
-    // resize controller if resize is required.
-    if (!self.resizeController) {
-        self.resizeController = [[DMResizerViewController alloc] initWithImage:self.shareImage andDelegate:self];
-        
-        if ([self imageIsSquare:self.shareImage]) {
-            self.resizeController.skipCropping = YES;
-        }
-    }
-    return self.resizeController;
-}
-
--(void)resizer:(DMResizerViewController *)resizer finishedResizingWithResult:(UIImage *)image {
-    if (image == nil) {
-        if (self.documentController) {
-            [self.documentController dismissMenuAnimated:YES];
-        }
-        [self activityDidFinish:NO];
-        return;
-    } else {
-        self.presentFromButton = resizer.doneButton;
-        self.shareImage = image;
-        // performActivity
-        [self performActivity];
-    }
-}
-
 - (void)performActivity {
     // no resize, just fire away.
     //UIImageWriteToSavedPhotosAlbum(item.image, nil, nil, nil);
@@ -123,11 +96,6 @@
 -(BOOL)imageIsLargeEnough:(UIImage *)image {
     CGSize imageSize = [image size];
     return ((imageSize.height * image.scale) >= 612 && (imageSize.width * image.scale) >= 612);
-}
-
--(BOOL)imageIsSquare:(UIImage *)image {
-    CGSize imageSize = image.size;
-    return (imageSize.height == imageSize.width);
 }
 
 -(void)activityDidFinish:(BOOL)success {
