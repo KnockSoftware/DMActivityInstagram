@@ -13,6 +13,7 @@
 @property (nonatomic, strong) UIImage *shareImage;
 @property (nonatomic, strong) NSString *shareString;
 @property (nonatomic, strong) NSArray *backgroundColors;
+@property (nonatomic, strong) UIView *presentingView;
 @property (readwrite) BOOL includeURL;
 
 @property (nonatomic, strong) UIDocumentInteractionController *documentController;

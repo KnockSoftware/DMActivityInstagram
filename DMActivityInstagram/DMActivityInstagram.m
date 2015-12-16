@@ -55,18 +55,8 @@
     }
 }
 
-- (void)performActivity {
-    // no resize, just fire away.
-    //UIImageWriteToSavedPhotosAlbum(item.image, nil, nil, nil);
-    CGFloat cropVal = (self.shareImage.size.height > self.shareImage.size.width ? self.shareImage.size.width : self.shareImage.size.height);
-    
-    cropVal *= [self.shareImage scale];
-    
-    CGRect cropRect = (CGRect){.size.height = cropVal, .size.width = cropVal};
-    CGImageRef imageRef = CGImageCreateWithImageInRect([self.shareImage CGImage], cropRect);
-    
-    NSData *imageData = UIImageJPEGRepresentation([UIImage imageWithCGImage:imageRef], 1.0);
-    CGImageRelease(imageRef);
+- (void)performActivity {    
+    NSData *imageData = UIImagePNGRepresentation(self.shareImage);
     
     NSString *writePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"instagram.igo"];
     if (![imageData writeToFile:writePath atomically:YES]) {
@@ -85,11 +75,14 @@
     [self.documentController setUTI:@"com.instagram.exclusivegram"];
     if (self.shareString) [self.documentController setAnnotation:@{@"InstagramCaption" : self.shareString}];
     
-    if (![self.documentController presentOpenInMenuFromBarButtonItem:self.presentFromButton animated:YES]) NSLog(@"couldn't present document interaction controller");
+    if ([self.documentController presentOptionsMenuFromRect:CGRectZero inView:self.presentingView animated:true]) {
+    }else {
+        NSLog(@"couldn't present document interaction controller");
+        [self activityDidFinish:NO];
+    }
 }
 
-
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
+- (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller {
     [self activityDidFinish:YES];
 }
 
